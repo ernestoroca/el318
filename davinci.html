@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <img id="foto" width="800" height="600" src="https://upload.wikimedia.org/wikipedia/commons/b/b5/800x600_Wallpaper_Blue_Sky.png" alt="The Scream"><br>
+    <canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+    </canvas>
+<script>
+var canva = document.getElementById("myCanvas");
+var ctx = canva.getContext("2d");
+var imgData, genetico;
+
+function generar(){
+    var i,gen;
+    var cromosoma = new Array(lngGen);
+    for (i=0;i<lngGen;i++){
+        gen = {
+            x: Math.random()*100,
+            y: Math.random()*100,
+            l: Math.random()*100,
+            r: Math.random()*255,
+            g: Math.random()*255,
+            b: Math.random()*255,
+        };
+        cromosoma[i] = gen;
+    }
+    return cromosoma;
+}
+
+function evaluar(cromosoma){
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, 800, 600);
+    var lng = cromosoma.length;
+    var i;
+    for(i=0;i<lng;i++){
+        ctx.fillStyle = 'rgb(' +cromosoma[i].r+ ',' +cromosoma[i].g+ ',' +cromosoma[i].b+ ')';
+        ctx.arc(cromosoma[i].x, cromosoma[i].y, cromosoma[i].l, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+    var imgNueva = ctx.getImageData(0, 0, 800, 600);
+    var j,val;
+    var err = 0;
+    lng = imgData.data.length;
+    for (i=0; i<lng; i+=4){
+        val = (imgData.data[i] - imgNueva.data[i])/256;
+        err += val*val;
+        val = (imgData.data[i+1] - imgNueva.data[i+1])/256;
+        err += val*val;
+        val = (imgData.data[i+2] - imgNueva.data[i+2])/256;
+        err += val*val;
+    }
+    return err;
+}
+
+function mutar(cromosoma){
+    var i,res;
+    function validar(res){
+        res += (Math.random()-0.5);
+        if(res<0){
+            res = 0;
+        }
+        return res;
+    }
+    for(i=0;i<lng;i++){
+        cromosoma[i].x = validar(cromosoma[i].x);
+        cromosoma[i].y = validar(cromosoma[i].x);
+        cromosoma[i].l = validar(cromosoma[i].l);
+        cromosoma[i].r = validar(cromosoma[i].r);
+        cromosoma[i].g = validar(cromosoma[i].g);
+        cromosoma[i].h = validar(cromosoma[i].b);
+    }
+    return cromosoma;
+}
+
+function cruzar(madre,padre){
+    var i;
+    var lng = Math.floor()*lngGen;
+    for(i=0;i<lng;i++){
+        madre[i].x = padre[i].x;
+        madre[i].y = padre[i].y;
+        madre[i].l = padre[i].l;
+        madre[i].r = padre[i].r;
+        madre[i].g = padre[i].g;
+        madre[i].b = padre[i].b;
+    }
+    return madre;
+}
+
+function Genetico(total,mutados,cruzados,funGenerar,funEvaluar,funMutar,funCruzar){
+    var poblacion = [];
+    var i,cromosoma;
+    console.log("iniciar => Iniciado");
+    for(i=0;i<total;i++){
+        cromosoma = funGenerar();
+        poblacion.push({
+            rendimiento: funEvaluar(cromosoma),
+            cromosomas: cromosomas,
+        });
+        console.log("individuo= "+ i);
+    }
+    console.log("iniciar => Finalizado");
+    this.evolucionar = function(){
+        function elegir(){
+            var max = total*(1+total)/2;
+            var r = Math.random()*max;
+            var pos = 0;
+            while(r>0){
+                r -= (pos+1);
+            }
+            return pos;
+        }
+        
+        console.log("evolucionar => Iniciado");
+        console.log("evolucionar => Inicio Creacion Mutantes");
+        var mutantes = new Array(mutados);
+        var i;
+        for(i=0;i<mutados;i++){
+            mutantes[i] = funMutar(poblacion[elegir()].cromosoma);
+            console.log("individuo= " + i);
+        }
+        console.log("evolucionar => Fin Creacion Mutantes");
+        
+        console.log("evolucionar => Inicio Creacion Cruzamiento");
+        var cruzantes = new Array(cruzados);
+        for(i=0;i<cruzados;i++){
+            mutantes[i] = funCruzar(poblacion[elegir()].cromosoma,poblacion[elegir()].cromosoma);
+            console.log("individuo= " + i);
+        }
+        console.log("evolucionar => Fin Creacion Cruzamiento");
+        
+        console.log("evolucionar => Inicio Evaluacion Mutantes");
+        for(i=0;i<mutados;i++){
+            poblacion[i].cromosoma = mutantes[i];
+            poblacion[i].rendimiento = funEvaluar(mutantes[i]);
+            console.log("individuo= " + i);
+        }
+        console.log("evolucionar => Fin Evaluacion Mutantes");
+        
+        console.log("evolucionar => Inicio Evaluacion Cruzamiento");
+        for(;i<mutados+cruzados;i++){
+            poblacion[mutados+i].cromosoma = cruzantes[i];
+            poblacion[mutados+i].rendimiento = funEvaluar(cruzantes[i]);
+            console.log("individuo= " + i);
+        }
+        console.log("evolucionar => Fin Evaluacion Cruzamiento");
+        
+        poblacion.sort(function(a,b){
+            return (a.rendimiento > b.rendimiento) ? +1 : -1;
+        });
+        console.log("evolucionar => Terminado");
+        return poblacion[total-1];
+    };
+};
+
+window.onload = function() {
+    var img = document.getElementById("foto");
+    img.crossOrigin = "Anonymous";
+    ctx.drawImage(img, 0, 0);
+    imgData = ctx.getImageData(0, 0, 800, 600);
+    setTimeout(function(){
+        genetico = new Genetico(100,10,10,generar,evaluar,mutar,cruzar);
+    },1000);
+};
+</script>
+  </body>
+</html>
