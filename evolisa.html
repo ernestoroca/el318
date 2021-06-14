@@ -181,6 +181,7 @@ function mutar(n,madrePos){
     }
 }
 
+var oldFit = 0;
 function evolucionar(){
     let res = finComparacion();
     if(res<0){
@@ -201,7 +202,11 @@ function evolucionar(){
         cruzar(pos++,NIndividuos-1,NIndividuos-2);
         
         pintar(NIndividuos-1);
-        console.log("Best:" + individuos[NIndividuos-1].fitness);
+        if(oldFit !== individuos[NIndividuos-1].fitness){
+            oldFit = individuos[NIndividuos-1].fitness
+            console.log("Best:" + oldFit);
+        }
+        
         setTimeout(evolucionar,1000);
     } else {
         pintar(res);
