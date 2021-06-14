@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shade Harvest</title>
+</head>
+<body onload="alCargar();">
+<canvas id="elcanva" width="800" height="600"></canvas><br>
+<img id="foto" src="https://source.unsplash.com/user/erondu/800x600">
+<script>
+const NCirculos = 30;
+const NIndividuos = 100;
+const NMutar = 10;
+const NCruzar = 20;
+var individuos = [];
+var ctx;
+var imgData;
+
+function genesis(){
+    for(let i=0;i<NIndividuos;i++){
+        let vec = [];
+        for(let j=0;j<NCirculos;j++){
+            vec.push({
+                x0: Math.floor(Math.random()*800),
+                y0: Math.floor(Math.random()*600),
+                r: Math.floor(Math.random()*100),
+                red: Math.floor(Math.random()*255),
+                green: Math.floor(Math.random()*255),
+                blue: Math.floor(Math.random()*255),
+            });
+        }
+        individuos.push(vec);
+    }
+}
+function pintar(n){
+    ctx.clearRect(0, 0, 800, 600);
+    let unIndividuo = individuos[n];
+    for(let i=0;i<NCirculos;i++){
+        ctx.fillStyle = `rgb(${unIndividuo[i].red},${unIndividuo[i].green},${unIndividuo[i].blue})`;
+        ctx.beginPath();
+        ctx.arc(unIndividuo[i].x0, unIndividuo[i].y0, unIndividuo[i].r, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
+function comparar(){
+    let imgNew = ctx.getImageData(0, 0, 800, 600).data;
+    let len = imgNew.length;
+    let fit = 0;
+    for(let i=0;i<800;i += 4){
+        let r = imgData[i] - imgNew[i];
+        let g = imgData[i+1] - imgNew[i+1];
+        let b = imgData[i+2] - imgNew[i+2];
+        fit += r*r + g*g + b*b;
+    }
+    return fit;
+}
+
+function alCargar(){
+    let c = document.getElementById("elcanva");
+    ctx = c.getContext("2d");
+    let img = document.getElementById("foto");
+    c.width = img.width;
+    c.height = img.height;
+    ctx.drawImage(img,0,0);
+    imgData = ctx.getImageData(0, 0, img.width, img.height).data;
+    
+    genesis();
+    pintar(1);
+}
+</script>
+</body>
+</html>
