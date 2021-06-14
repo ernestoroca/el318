@@ -40,7 +40,7 @@ function pintar(n){
     for(let i=0;i<NCirculos;i++){
         ctx.fillStyle = `rgb(${circulos[i].red},${circulos[i].green},${circulos[i].blue})`;
         ctx.beginPath();
-        ctx.arc(unIndividuo[i].x0, circulos[i].y0, circulos[i].r, 0, 2 * Math.PI);
+        ctx.arc(circulos[i].x0, circulos[i].y0, circulos[i].r, 0, 2 * Math.PI);
         ctx.fill();
     }
 }
