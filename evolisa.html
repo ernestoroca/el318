@@ -72,6 +72,7 @@ function cruzar(n){
     individuos[n].fitness = -1;
     let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
     let padrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
+    console.log("Madre:"+ madrePos + " Padre:"+ padrePos +" Hijo:"+ n); 
     
     let madreData = individuos[madrePos].circulos;
     let padreData = individuos[padrePos].circulos;
@@ -99,9 +100,8 @@ function cruzar(n){
     
 function mutar(n){
     individuos[n].fitness = -1;
-    let strMsg = "Hijo:" +n; 
     let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
-    strMsg += " Madre:" +madrePos;
+    console.log("Madre:"+ madrePos +" Hijo:"+ n); 
     let madreData = individuos[madrePos].circulos;
     let hijosData = individuos[n].circulos;
     for(let i=0;i<NCirculos;i++){
@@ -192,10 +192,10 @@ function evolucionar(){
         });
         let pos = 0;
         for(let i=0;i<NMutar;i++){
-            mutar(pos);
+            mutar(pos++);
         }
         for(let i=0;i<NCruzar;i++){
-            cruzar(pos);
+            cruzar(pos++);
         }
         pintar(NIndividuos-1);
         setTimeout(evolucionar,1000);
