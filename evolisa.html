@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Shade Harvest</title>
+<title>Evolucion</title>
 </head>
 <body onload="alCargar();">
 <canvas id="elcanva" width="800" height="600"></canvas><br>
@@ -28,16 +28,19 @@ function genesis(){
                 blue: Math.floor(Math.random()*255),
             });
         }
-        individuos.push(vec);
+        individuos.push({
+            circulos: vec,
+            fitness: -1
+        });
     }
 }
 function pintar(n){
     ctx.clearRect(0, 0, 800, 600);
-    let unIndividuo = individuos[n];
+    let circulos = individuos[n].circulos;
     for(let i=0;i<NCirculos;i++){
-        ctx.fillStyle = `rgb(${unIndividuo[i].red},${unIndividuo[i].green},${unIndividuo[i].blue})`;
+        ctx.fillStyle = `rgb(${circulos[i].red},${circulos[i].green},${circulos[i].blue})`;
         ctx.beginPath();
-        ctx.arc(unIndividuo[i].x0, unIndividuo[i].y0, unIndividuo[i].r, 0, 2 * Math.PI);
+        ctx.arc(unIndividuo[i].x0, circulos[i].y0, circulos[i].r, 0, 2 * Math.PI);
         ctx.fill();
     }
 }
@@ -53,6 +56,99 @@ function comparar(){
     }
     return fit;
 }
+function compararTodas(){
+    for(let i=0;i<NIndividuos;i++){
+        if(individuos[i].fitness === -1){
+            pintar(i);
+            individuos[i].fitness = comparar();
+        }
+    }
+    individuos.sort(function(a,b){
+        return (a.fitness > b.fitness) ? -1 : +1
+    });
+}
+
+function mutar(n){
+    let elCirculo = Math.floor(Math.random()*NCirculos);
+    let dado = Math.floor(Math.random()*7);
+    let variable;
+    switch(dado){
+        case 0:
+            variable = individuos[n].circulos[elCirculo].x0;
+            variable += (Math.random()<0.5) ? +1 : -1;
+            if(variable < 0 || variable > 799){
+                mutar(n);
+            } else {
+                individuos[n].circulos[elCirculo].x0 = variable;
+            }
+            break;
+        case 1:
+            variable = individuos[n].circulos[elCirculo].y0;
+            variable += (Math.random()<0.5) ? +1 : -1;
+            if(variable < 0 || variable > 599){
+                mutar(n);
+            } else {
+                individuos[n].circulos[elCirculo].y0 = variable;
+            }
+            break;
+        case 2:
+            variable = individuos[n].circulos[elCirculo].r;
+            variable += (Math.random()<0.5) ? +1 : -1;
+            if(variable < 0 || variable > 99){
+                mutar(n);
+            } else {
+                individuos[n].circulos[elCirculo].r = variable;
+            }
+            break;
+        case 3:
+            variable = individuos[n].circulos[elCirculo].red;
+            variable += (Math.random()<0.5) ? +1 : -1;
+            if(variable < 0 || variable > 255){
+                mutar(n);
+            } else {
+                individuos[n].circulos[elCirculo].red = variable;
+            }
+            break;
+        case 4:
+            variable = individuos[n].circulos[elCirculo].green;
+            variable += (Math.random()<0.5) ? +1 : -1;
+            if(variable < 0 || variable > 255){
+                mutar(n);
+            } else {
+                individuos[n].circulos[elCirculo].green = variable;
+            }
+            break;
+        case 5:
+            variable = individuos[n].circulos[elCirculo].blue;
+            variable += (Math.random()<0.5) ? +1 : -1;
+            if(variable < 0 || variable > 255){
+                mutar(n);
+            } else {
+                individuos[n].circulos[elCirculo].blue = variable;
+            }
+            break;
+        case 6:
+            variable = elCirculo;
+            variable += (Math.random()<0.5) ? +1 : -1;
+            if(variable < 0 || variable >= NCirculos){
+                mutar(n);
+            } else {
+                let datos = individuos[n].circulos[elCirculo];
+                individuos[n].circulos[elCirculo] = individuos[n].circulos[variable];
+                individuos[n].circulos[variable] = datos;
+            }
+            break;
+    }
+}
+
+function evolucionar(){
+    compararTodas();
+    for(i=0;i<NMutar;i++){
+        mutar(i);
+        individuos[i].fitness = -1;
+    }
+    pintar(NIndividuos-1);
+}
 
 function alCargar(){
     let c = document.getElementById("elcanva");
@@ -63,8 +159,7 @@ function alCargar(){
     ctx.drawImage(img,0,0);
     imgData = ctx.getImageData(0, 0, img.width, img.height).data;
     genesis();
-    pintar(1);
-    let res = comparar();
+    evolucionar();
 }
 </script>
 </body>
