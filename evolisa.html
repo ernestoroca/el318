@@ -69,62 +69,73 @@ function compararTodas(){
 }
 
 function mutar(n){
+    let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-MCruzar))+NMutar+MCruzar;
+    let madreData = individuos[madrePos].circulos;
+    let hijosData = individuos[n].circulos;
+    for(let i=0;i<NCirculos;i++){
+        hijosData[i].x0 = madreData[i].x0;
+        hijosData[i].y0 = madreData[i].y0;
+        hijosData[i].r = madreData[i].r;
+        hijosData[i].red = madreData[i].red;
+        hijosData[i].green = madreData[i].green;
+        hijosData[i].blue = madreData[i].blue;
+    }  
     let elCirculo = Math.floor(Math.random()*NCirculos);
     let dado = Math.floor(Math.random()*7);
     let variable;
     switch(dado){
         case 0:
-            variable = individuos[n].circulos[elCirculo].x0;
+            variable = hijosData[elCirculo].x0;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 799){
                 mutar(n);
             } else {
-                individuos[n].circulos[elCirculo].x0 = variable;
+                hijosData[elCirculo].x0 = variable;
             }
             break;
         case 1:
-            variable = individuos[n].circulos[elCirculo].y0;
+            variable = hijosData[elCirculo].y0;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 599){
                 mutar(n);
             } else {
-                individuos[n].circulos[elCirculo].y0 = variable;
+                hijosData[elCirculo].y0 = variable;
             }
             break;
         case 2:
-            variable = individuos[n].circulos[elCirculo].r;
+            variable = hijosData[elCirculo].r;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 99){
                 mutar(n);
             } else {
-                individuos[n].circulos[elCirculo].r = variable;
+                hijosData[elCirculo].r = variable;
             }
             break;
         case 3:
-            variable = individuos[n].circulos[elCirculo].red;
+            variable = hijosData[elCirculo].red;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 255){
                 mutar(n);
             } else {
-                individuos[n].circulos[elCirculo].red = variable;
+                hijosData[elCirculo].red = variable;
             }
             break;
         case 4:
-            variable = individuos[n].circulos[elCirculo].green;
+            variable = hijosData[elCirculo].green;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 255){
                 mutar(n);
             } else {
-                individuos[n].circulos[elCirculo].green = variable;
+                hijosData[elCirculo].green = variable;
             }
             break;
         case 5:
-            variable = individuos[n].circulos[elCirculo].blue;
+            variable = hijosData[elCirculo].blue;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 255){
                 mutar(n);
             } else {
-                individuos[n].circulos[elCirculo].blue = variable;
+                hijosData[elCirculo].blue = variable;
             }
             break;
         case 6:
@@ -133,9 +144,9 @@ function mutar(n){
             if(variable < 0 || variable >= NCirculos){
                 mutar(n);
             } else {
-                let datos = individuos[n].circulos[elCirculo];
-                individuos[n].circulos[elCirculo] = individuos[n].circulos[variable];
-                individuos[n].circulos[variable] = datos;
+                let datos = hijosData[elCirculo];
+                hijosData[elCirculo] = hijosData[variable];
+                hijosData[variable] = datos;
             }
             break;
     }
@@ -148,7 +159,7 @@ function evolucionar(){
         individuos[i].fitness = -1;
     }
     pintar(NIndividuos-1);
-    setTimeout(evolucionar,100);
+    setTimeout(evolucionar,1000);
 }
 
 function alCargar(){
