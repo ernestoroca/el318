@@ -61,8 +61,8 @@ function alCargar(){
     c.width = img.width;
     c.height = img.height;
     ctx.drawImage(img,0,0);
+    img.crossOrigin = "Anonymous";
     imgData = ctx.getImageData(0, 0, img.width, img.height).data;
-    
     genesis();
     pintar(1);
 }
