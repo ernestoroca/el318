@@ -68,10 +68,8 @@ function finComparacion(){
     return -1;
 }
 
-function cruzar(n){
+function cruzar(n,madrePos,padrePos){
     individuos[n].fitness = -1;
-    let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
-    let padrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
     console.log("Madre:"+ madrePos + " Padre:"+ padrePos +" Hijo:"+ n); 
     
     let madreData = individuos[madrePos].circulos;
@@ -98,9 +96,8 @@ function cruzar(n){
     }
 }
     
-function mutar(n){
+function mutar(n,madrePos){
     individuos[n].fitness = -1;
-    let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
     console.log("Madre:"+ madrePos +" Hijo:"+ n); 
     let madreData = individuos[madrePos].circulos;
     let hijosData = individuos[n].circulos;
@@ -192,11 +189,17 @@ function evolucionar(){
         });
         let pos = 0;
         for(let i=0;i<NMutar;i++){
-            mutar(pos++);
+            let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
+            mutar(pos++,madrePos);
         }
         for(let i=0;i<NCruzar;i++){
-            cruzar(pos++);
+            let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
+            let padrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
+            cruzar(pos++,madrePos,padrePos);
         }
+        mutar(pos++,NIndividuos-1);
+        cruzar(pos++,NIndividuos-1,NIndividuos-2);
+        
         pintar(NIndividuos-1);
         setTimeout(evolucionar,1000);
     } else {
