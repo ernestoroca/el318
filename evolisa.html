@@ -69,7 +69,7 @@ function compararTodas(){
 }
 
 function mutar(n){
-    let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-MCruzar))+NMutar+MCruzar;
+    let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-MCruzar))+NMutar+NCruzar;
     let madreData = individuos[madrePos].circulos;
     let hijosData = individuos[n].circulos;
     for(let i=0;i<NCirculos;i++){
