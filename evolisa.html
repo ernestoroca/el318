@@ -68,7 +68,37 @@ function finComparacion(){
     return -1;
 }
 
+function cruzar(n){
+    individuos[n].fitness = -1;
+    let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
+    let padrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
+    
+    let madreData = individuos[madrePos].circulos;
+    let padreData = individuos[madrePos].circulos;
+    let hijosData = individuos[n].circulos;
+    
+    let dado = Math.floor(Math.random()*NCirculos);
+    let i;
+    for(i=0;i<dado;i++){
+        hijosData[i].x0 = madreData[i].x0;
+        hijosData[i].y0 = madreData[i].y0;
+        hijosData[i].r = madreData[i].r;
+        hijosData[i].red = madreData[i].red;
+        hijosData[i].green = madreData[i].green;
+        hijosData[i].blue = madreData[i].blue;
+    }
+    for(;i<NCirculos;i++){
+        hijosData[i].x0 = padreData[i].x0;
+        hijosData[i].y0 = padreData[i].y0;
+        hijosData[i].r = padreData[i].r;
+        hijosData[i].red = padreData[i].red;
+        hijosData[i].green = padreData[i].green;
+        hijosData[i].blue = padreData[i].blue;
+    }
+}
+    
 function mutar(n){
+    individuos[n].fitness = -1;
     let strMsg = "Hijo:" +n; 
     let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
     strMsg += " Madre:" +madrePos;
@@ -160,9 +190,12 @@ function evolucionar(){
         individuos.sort(function(a,b){
             return (a.fitness > b.fitness) ? -1 : +1
         });
-        for(i=0;i<NMutar;i++){
-            mutar(i);
-            individuos[i].fitness = -1;
+        let pos = 0;
+        for(let i=0;i<NMutar;i++){
+            mutar(pos);
+        }
+        for(let i=0;i<NCruzar;i++){
+            cruzar(pos);
         }
         pintar(NIndividuos-1);
         setTimeout(evolucionar,1000);
