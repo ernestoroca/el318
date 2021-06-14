@@ -117,7 +117,7 @@ function mutar(n,madrePos){
             variable = hijosData[elCirculo].x0;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 799){
-                mutar(n);
+                mutar(n,madrePos);
             } else {
                 hijosData[elCirculo].x0 = variable;
             }
@@ -126,7 +126,7 @@ function mutar(n,madrePos){
             variable = hijosData[elCirculo].y0;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 599){
-                mutar(n);
+                mutar(n,madrePos);
             } else {
                 hijosData[elCirculo].y0 = variable;
             }
@@ -135,7 +135,7 @@ function mutar(n,madrePos){
             variable = hijosData[elCirculo].r;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 99){
-                mutar(n);
+                mutar(n,madrePos);
             } else {
                 hijosData[elCirculo].r = variable;
             }
@@ -144,7 +144,7 @@ function mutar(n,madrePos){
             variable = hijosData[elCirculo].red;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 255){
-                mutar(n);
+                mutar(n,madrePos);
             } else {
                 hijosData[elCirculo].red = variable;
             }
@@ -153,7 +153,7 @@ function mutar(n,madrePos){
             variable = hijosData[elCirculo].green;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 255){
-                mutar(n);
+                mutar(n,madrePos);
             } else {
                 hijosData[elCirculo].green = variable;
             }
@@ -162,7 +162,7 @@ function mutar(n,madrePos){
             variable = hijosData[elCirculo].blue;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable > 255){
-                mutar(n);
+                mutar(n,madrePos);
             } else {
                 hijosData[elCirculo].blue = variable;
             }
@@ -171,7 +171,7 @@ function mutar(n,madrePos){
             variable = elCirculo;
             variable += (Math.random()<0.5) ? +1 : -1;
             if(variable < 0 || variable >= NCirculos){
-                mutar(n);
+                mutar(n,madrePos);
             } else {
                 let datos = hijosData[elCirculo];
                 hijosData[elCirculo] = hijosData[variable];
