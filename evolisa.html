@@ -44,7 +44,7 @@ function pintar(n){
         ctx.fill();
     }
 }
-function comparar(){
+function comparar(n){
     let imgNew = ctx.getImageData(0, 0, 800, 600).data;
     let len = imgNew.length;
     let fit = 0;
@@ -54,22 +54,24 @@ function comparar(){
         let b = imgData[i+2] - imgNew[i+2];
         fit += r*r + g*g + b*b;
     }
-    return fit;
+    individuos[n].fitness = fit;
+    console.log("Fitness("+n+"):"+fit);
+    evolucionar();
 }
-function compararTodas(){
-    for(let i=0;i<NIndividuos;i++){
+
+function finComparacion(){
+    for(i=0;i<NIndividuos;i++){
         if(individuos[i].fitness === -1){
-            pintar(i);
-            individuos[i].fitness = comparar();
+            return i;
         }
     }
-    individuos.sort(function(a,b){
-        return (a.fitness > b.fitness) ? -1 : +1
-    });
+    return -1;
 }
 
 function mutar(n){
+    let strMsg = "Hijo:" +n; 
     let madrePos = Math.floor(Math.random()*(NIndividuos-NMutar-NCruzar))+NMutar+NCruzar;
+    strMsg += " Madre:" +madrePos;
     let madreData = individuos[madrePos].circulos;
     let hijosData = individuos[n].circulos;
     for(let i=0;i<NCirculos;i++){
@@ -153,13 +155,23 @@ function mutar(n){
 }
 
 function evolucionar(){
-    compararTodas();
-    for(i=0;i<NMutar;i++){
-        mutar(i);
-        individuos[i].fitness = -1;
+    let res = finComparacion();
+    if(res<0){
+        individuos.sort(function(a,b){
+            return (a.fitness > b.fitness) ? -1 : +1
+        });
+        for(i=0;i<NMutar;i++){
+            mutar(i);
+            individuos[i].fitness = -1;
+        }
+        pintar(NIndividuos-1);
+        setTimeout(evolucionar,1000);
+    } else {
+        pintar(res);
+        setTimeout(function(){
+          comparar(res)
+        },100);
     }
-    pintar(NIndividuos-1);
-    setTimeout(evolucionar,1000);
 }
 
 function alCargar(){
